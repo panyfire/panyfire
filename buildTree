@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<?php
+$steps = [
+    [
+        'id' => 1,
+        'name' => 'Шаг 1: Выбор размера экрана',
+        'answers' => [1, 2, 3],
+    ],
+    [
+        'id' => 2,
+        'name' => 'Шаг 2: Выбор разрешения экрана',
+        'answers' => [4, 5, 6],
+    ],
+    [
+        'id' => 3,
+        'name' => 'Шаг 3: Выбор типа матрицы',
+        'answers' => [7, 8, 9],
+    ],
+    [
+        'id' => 4,
+        'name' => 'Шаг 4: Выбор частоты обновления экрана',
+        'answers' => [10, 11, 12],
+    ],
+    [
+        'id' => 5,
+        'name' => 'Шаг 5: Выбор поддерживаемых технологий',
+        'answers' => [13, 14, 15],
+    ],
+    [
+        'id' => 6,
+        'name' => 'Шаг 6: Выбор дополнительных функций',
+        'answers' => [16, 17, 18],
+    ],
+];
+
+$answers = [
+    [
+        'id' => 1,
+        'name' => '32 дюйма',
+        'previous_step' => null,
+        'next_step' => 2,
+        'leading_answers' => [],
+    ],
+    [
+        'id' => 2,
+        'name' => '40 дюймов',
+        'previous_step' => null,
+        'next_step' => 3, // Изменено на 3 шаг вперед
+        'leading_answers' => [],
+    ],
+    [
+        'id' => 3,
+        'name' => '43 дюйма',
+        'previous_step' => null,
+        'next_step' => 2,
+        'leading_answers' => [],
+    ],
+    [
+        'id' => 4,
+        'name' => 'HD (1280x720)',
+        'previous_step' => 1,
+        'next_step' => 3,
+        'leading_answers' => [1, 2, 3],
+    ],
+    [
+        'id' => 5,
+        'name' => 'Full HD (1920x1080)',
+        'previous_step' => 1,
+        'next_step' => 4, // Изменено на 4 шаг вперед
+        'leading_answers' => [1, 2, 3],
+    ],
+    [
+        'id' => 6,
+        'name' => '4K (3840x2160)',
+        'previous_step' => 1,
+        'next_step' => 3,
+        'leading_answers' => [1, 2, 3],
+    ],
+    [
+        'id' => 7,
+        'name' => 'LED',
+        'previous_step' => 2,
+        'next_step' => 4,
+        'leading_answers' => [4, 5, 6],
+    ],
+    [
+        'id' => 8,
+        'name' => 'OLED',
+        'previous_step' => 2,
+        'next_step' => 5, // Изменено на 5 шаг вперед
+        'leading_answers' => [4, 5, 6],
+    ],
+    [
+        'id' => 9,
+        'name' => 'QLED',
+        'previous_step' => 2,
+        'next_step' => 4,
+        'leading_answers' => [4, 5, 6],
+    ],
+    [
+        'id' => 10,
+        'name' => '50 Гц',
+        'previous_step' => 3,
+        'next_step' => 5,
+        'leading_answers' => [7, 8, 9],
+    ],
+    [
+        'id' => 11,
+        'name' => '100 Гц',
+        'previous_step' => 3,
+        'next_step' => 6, // Изменено на 6 шаг вперед
+        'leading_answers' => [7, 8, 9],
+    ],
+    [
+        'id' => 12,
+        'name' => '120 Гц',
+        'previous_step' => 3,
+        'next_step' => 5,
+        'leading_answers' => [7, 8, 9],
+    ],
+    [
+        'id' => 13,
+        'name' => 'HDR10',
+        'previous_step' => 4,
+        'next_step' => 6,
+        'leading_answers' => [10, 11, 12],
+    ],
+    [
+        'id' => 14,
+        'name' => 'HDR10+',
+        'previous_step' => 4,
+        'next_step' => 6,
+        'leading_answers' => [10, 11, 12],
+    ],
+    [
+        'id' => 15,
+        'name' => 'Dolby Vision',
+        'previous_step' => 4,
+        'next_step' => 6,
+        'leading_answers' => [10, 11, 12],
+    ],
+    [
+        'id' => 16,
+        'name' => 'Wi-Fi',
+        'previous_step' => 5,
+        'next_step' => null,
+        'leading_answers' => [13, 14, 15],
+    ],
+    [
+        'id' => 17,
+        'name' => 'Bluetooth',
+        'previous_step' => 5,
+        'next_step' => null,
+        'leading_answers' => [13, 14, 15],
+    ],
+    [
+        'id' => 18,
+        'name' => 'USB',
+        'previous_step' => 5,
+        'next_step' => null,
+        'leading_answers' => [13, 14, 15],
+    ],
+];
+
+function buildTree(array $steps, array $answers, int $currentStepId, int $level = 0): array
+{
+    $currentStep = null;
+    foreach ($steps as $step) {
+        if ($step['id'] === $currentStepId) {
+            $currentStep = $step;
+            break;
+        }
+    }
+
+    if ($currentStep) {
+        $tree = [
+            'name' => $currentStep['name'],
+            'children' => []
+        ];
+
+        foreach ($currentStep['answers'] as $answerId) {
+            $answer = null;
+            foreach ($answers as $answerItem) {
+                if ($answerItem['id'] === $answerId) {
+                    $answer = $answerItem;
+                    break;
+                }
+            }
+
+            if ($answer) {
+                $tree['children'][] = [
+                    'name' => $answer['name'],
+                    'children' => $answer['next_step'] ? buildTree($steps, $answers, $answer['next_step'], $level + 1) : []
+                ];
+            }
+        }
+
+        return $tree;
+    }
+
+    return [];
+}
+
+// Вывод дерева по шагам и ответам
+$tree = buildTree($steps, $answers, 1);
+echo '<pre>';
+print_r($tree);
+echo '</pre>';
+
+?>
+
+</body>
+</html>
